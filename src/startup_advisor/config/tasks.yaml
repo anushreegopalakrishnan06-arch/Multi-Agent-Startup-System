@@ -1,17 +1,17 @@
-research_task:
+trend_analysis_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Analyze the latest trends related to the startup idea: {startup_idea}.
 
-reporting_task:
-  description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Focus on:
+    1. Current market trends
+    2. Emerging technologies
+    3. Customer demand
+    4. Industry growth opportunities
+    5. Potential risks
+
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A detailed trend analysis report containing:
+    - Top trends
+    - Growth opportunities
+    - Technologies to watch
+    - Risks and recommendations

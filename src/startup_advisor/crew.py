@@ -1,48 +1,49 @@
+import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
 
 
 @CrewBase
 class StartupAdvisor():
-    """StartupAdvisor crew"""
 
-    agents: list[BaseAgent]
-    tasks: list[Task]
-
+    # 🔥 Trend Agent
     @agent
-    def researcher(self) -> Agent:
+    def trend_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
+            role="Startup Trend Analyst",
+            goal="Analyze startup trends",
+            backstory="Expert in market research and startup ecosystem",
+            llm="gemini/gemini-2.5-flash",
             verbose=True
         )
 
-    @agent
-    def reporting_analyst(self) -> Agent:
-        return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
-        )
-
+    # 🔥 Trend Task
     @task
-    def research_task(self) -> Task:
+    def trend_analysis_task(self) -> Task:
         return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
-        )
+            description="""
+            Analyze the latest trends related to the startup idea: {startup_idea}.
 
-    @task
-    def reporting_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            Focus on:
+            1. Current market trends
+            2. Emerging technologies
+            3. Customer demand
+            4. Industry growth opportunities
+            5. Potential risks
+            """,
+            expected_output="""
+            A detailed trend analysis report with trends, opportunities, risks
+            """,
+            agent=self.trend_analyst(),
+            output_file="report.md"
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the StartupAdvisor crew"""
         return Crew(
-            agents=self.agents,
-            tasks=self.tasks,
+            agents=[self.trend_analyst()],
+            tasks=[self.trend_analysis_task()],
             process=Process.sequential,
-            verbose=True,
+            verbose=True
         )
+    

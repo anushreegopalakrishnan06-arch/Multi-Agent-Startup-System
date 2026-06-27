@@ -7,15 +7,20 @@ from datetime import datetime
 from startup_advisor.crew import StartupAdvisor
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
+load_dotenv()
+
+print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
 
 def run():
     """
     Run the crew.
     """
     inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+        "startup_idea": "AI-based startup for students career guidance"
     }
 
     try:
@@ -88,3 +93,6 @@ def run_with_trigger():
         return result
     except Exception as e:
         raise Exception(f"An error occurred while running the crew with trigger: {e}")
+
+if __name__ == "__main__":
+    run()
