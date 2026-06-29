@@ -1,17 +1,48 @@
 trend_analysis_task:
   description: >
-    Analyze the latest trends related to the startup idea: {startup_idea}.
+    Search the current market using web sources and identify:
 
-    Focus on:
-    1. Current market trends
-    2. Emerging technologies
-    3. Customer demand
-    4. Industry growth opportunities
-    5. Potential risks
+    - Top trending domains
+    - Trending jobs and career opportunities
+    - Emerging technologies
+    - Customer demand
+    - Industry growth opportunities
+    - Recommended startup and business ideas
+
+    Provide the latest market information and recommendations.
 
   expected_output: >
-    A detailed trend analysis report containing:
-    - Top trends
-    - Growth opportunities
-    - Technologies to watch
+    A detailed report containing:
+
+    1. Trending Domains
+    2. Trending Jobs
+    3. Emerging Technologies
+    4. Customer Demand
+    5. Industry Growth Opportunities
+    6. Recommended Business and Startup Ideas.
+
+business_discovery_task:
+  description: >
+    Analyze the domain {field} with a budget of {budget}.
+
+    Identify:
+
+    - Businesses that can be started
+    - Jobs suitable for this domain and budget
+    - Current market demand
+    - Competitors
+    - Revenue opportunities
+    - Budget feasibility
     - Risks and recommendations
+
+  expected_output: >
+    A detailed report containing:
+
+    1. Suggested Businesses
+    2. Suggested Jobs
+    3. Market Demand Analysis
+    4. Competitor Analysis
+    5. Revenue Opportunities
+    6. Budget Feasibility
+    7. Risks
+    8. Final Recommendation.
