@@ -16,15 +16,23 @@ load_dotenv()
 print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
 
 def run():
-    """
-    Run the crew.
-    """
-    inputs = {
-        "startup_idea": "AI-based startup for students career guidance"
-    }
-
     try:
-        StartupAdvisor().crew().kickoff(inputs=inputs)
+        # 1. Trend Agent always runs
+        print("Running Trend Agent...")
+        StartupAdvisor().trend_crew().kickoff(inputs={})
+
+        # 2. Business Discovery input
+        field = input("Enter domain/field: ").strip()
+        budget = input("Enter budget: ").strip()
+
+        print("Running Business Discovery Agent...")
+        StartupAdvisor().business_crew().kickoff(
+            inputs={
+                "field": field,
+                "budget": budget
+            }
+        )
+
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
