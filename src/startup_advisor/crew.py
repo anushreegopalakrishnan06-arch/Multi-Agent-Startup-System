@@ -3,7 +3,6 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
 
-search_tool = SerperDevTool()
 
 
 @CrewBase
@@ -23,7 +22,7 @@ class StartupAdvisor():
              Continuously analyzes global markets and recommends
             high-demand industries and business opportunities.
             """,
-            tools=[search_tool],
+            tools=[SerperDevTool()],
             llm="gemini/gemini-2.5-flash",
             verbose=True
         )
@@ -71,6 +70,24 @@ class StartupAdvisor():
             agent=self.business_discovery_agent(),
             output_file="business_report.md"
        )
+    
+    @agent
+    def financial_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config['financial_agent'],
+            tools=[SerperDevTool()],
+            llm="gemini/gemini-2.5-flash",
+            verbose=True
+    )
+
+    @task
+    def financial_analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['financial_analysis_task'],
+            agent=self.financial_agent(),
+            output_file="financial_report.md"
+    )
+
 
     @crew
     def trend_crew(self) -> Crew:
@@ -87,5 +104,13 @@ class StartupAdvisor():
             tasks=[self.business_discovery_task()],
             process=Process.sequential
        )
+    
+    @crew
+    def financial_crew(self) -> Crew:
+        return Crew(
+            agents=[self.financial_agent()],
+            tasks=[self.financial_analysis_task()],
+            process=Process.sequential
+    )
 
- 
+

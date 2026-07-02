@@ -11,10 +11,11 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
-load_dotenv()
+
+
 
 print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
-
+print("SERPER:", os.getenv("SERPER_API_KEY"))
 def run():
     try:
         # 1. Trend Agent always runs
@@ -22,16 +23,28 @@ def run():
         StartupAdvisor().trend_crew().kickoff(inputs={})
 
         # 2. Business Discovery input
+
         field = input("Enter domain/field: ").strip()
         budget = input("Enter budget: ").strip()
 
         print("Running Business Discovery Agent...")
-        StartupAdvisor().business_crew().kickoff(
+        business_result = StartupAdvisor().business_crew().kickoff(
             inputs={
                 "field": field,
                 "budget": budget
             }
         )
+
+
+        # 3. Financial Agent
+        print("Running Financial Agent...")
+        StartupAdvisor().financial_crew().kickoff(
+            inputs={
+                "business_report": 
+        str(business_result)
+            }
+        )
+
 
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
