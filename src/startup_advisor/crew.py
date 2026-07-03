@@ -114,3 +114,32 @@ class StartupAdvisor():
     )
 
 
+
+    @agent
+    def business_validation_agent(self) -> Agent:
+        return Agent(
+            config=self.agents_config['business_validation_agent'],
+            tools=[SerperDevTool()],
+            llm="gemini/gemini-2.5-flash",
+            verbose=True
+    )
+
+
+    @task
+    def business_validation_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['validation_task'],
+            agent=self.business_validation_agent(),
+            output_file="validation_report.md"
+    )
+
+
+    @crew
+    def validation_crew(self) -> Crew:
+        return Crew(
+            agents=[self.business_validation_agent()],
+            tasks=[self.business_validation_task()],
+            process=Process.sequential
+    )
+
+

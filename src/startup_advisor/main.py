@@ -36,14 +36,23 @@ def run():
         )
 
 
-        # 3. Financial Agent
+
         print("Running Financial Agent...")
-        StartupAdvisor().financial_crew().kickoff(
+        financial_result = StartupAdvisor().financial_crew().kickoff(
             inputs={
-                "business_report": 
-        str(business_result)
+                "business_report": str(business_result)
             }
         )
+
+        print("Running Validation Agent...")
+        validation_result = StartupAdvisor().validation_crew().kickoff(
+            inputs={
+                "financial_report": str(financial_result)
+            }
+        )
+
+        print("Validation Completed!")
+        print(validation_result)
 
 
     except Exception as e:
