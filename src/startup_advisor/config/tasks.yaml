@@ -49,36 +49,58 @@ business_discovery_task:
 
 financial_analysis_task:
   description: >
-    Based on the following business discovery report:
+    Based on the following business report:
 
     {business_report}
 
-    Analyze and provide:
-
-    - Estimated startup cost
-    - Monthly operational expenses
-    - Revenue projections
-    - Profit estimation
-    - Break-even analysis
-    - ROI (Return on Investment)
-    - Financial risks
-
-    Also analyze the market internally and suggest:
-
-    - Unique features that are not commonly available in the market
-    - Innovative ideas to increase revenue
-    - Features that improve customer engagement and business growth
+    Generate a detailed financial report including:
+    - Estimated Revenue
+    - Required Investment
+    - ROI Percentage
+    - Break-even Period
+    - Financial Risks
+    - Financial Recommendations
 
   expected_output: >
-    A detailed report containing:
+    A detailed financial report with:
+    - Revenue Estimation
+    - Investment Requirement
+    - ROI %
+    - Break-even Analysis
+    - Risk Analysis
+    - Financial Recommendations
 
-    1. Startup Cost Estimation
-    2. Monthly Expenses
-    3. Revenue Projection
-    4. Profit Estimation
-    5. Break-even Analysis
-    6. ROI
-    7. Financial Risks
-    8. Unique Feature Suggestions
-    9. Revenue Growth Strategies
-    10. Final Recommendation
+validation_task:
+  description: >
+    Based on the following financial report:
+
+    {financial_report}
+
+    Validate the startup idea and provide:
+
+    1. Market Demand Percentage
+    2. Success Probability Percentage
+    3. Risk Percentage
+    4. Competition Level
+    5. Growth Potential
+    6. Final Recommendation (Good / Moderate / Not Recommended)
+
+    Also generate dashboard metrics.
+
+  expected_output: >
+    ## Business Validation Report
+
+    Market Demand: XX%
+    Success Probability: XX%
+    Risk Percentage: XX%
+    Competition Level: Low/Medium/High
+    Growth Potential: XX%
+
+    Final Recommendation:
+    GOOD STARTUP IDEA / MODERATE / NOT RECOMMENDED
+
+    Dashboard Metrics:
+    - Demand Score: XX/100
+    - Growth Score: XX/100
+    - Investment Score: XX/100
+    - Risk Score: XX/100
