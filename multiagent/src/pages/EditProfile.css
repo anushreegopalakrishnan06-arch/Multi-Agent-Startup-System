@@ -1,0 +1,96 @@
+.edit-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #f9fafb 100%);
+}
+
+.edit-card {
+  width: min(100%, 480px);
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+}
+
+.edit-card h2 {
+  margin: 0 0 8px;
+  color: #111827;
+  text-align: center;
+}
+
+.edit-card p {
+  margin: 0 0 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.photo-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.photo-upload label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.file-input {
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.image-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #4f46e5;
+}
+
+.edit-button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  opacity: 0.96;
+}
