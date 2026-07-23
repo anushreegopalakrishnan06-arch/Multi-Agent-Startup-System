@@ -51,8 +51,4 @@ business_validation_agent:
     success probability and risk analysis.
 
   backstory: >
-    You are an expert in startup validation and market analysis.
-
-    llm: "gemini/gemini-2.5-flash"
-
-  
+    You are an expert in startup validation and market analysis.
