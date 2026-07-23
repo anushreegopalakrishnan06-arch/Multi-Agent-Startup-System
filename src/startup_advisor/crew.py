@@ -1,9 +1,19 @@
-import os
+
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
+import os
+from crewai import LLM
 
+# LiteLLM requires OPENAI_API_KEY to be set when using the OpenAI provider format,
+# even if we pass api_key directly. We trick it by setting it to our Groq key.
+os.environ["OPENAI_API_KEY"] = os.environ.get("GROQ_API_KEY", "")
 
+groq_llm = LLM(
+    model="llama-3.3-70b-versatile",
+    base_url="https://api.groq.com/openai/v1",
+    api_key=os.environ.get("GROQ_API_KEY")
+)
 
 @CrewBase
 class StartupAdvisor():
@@ -11,46 +21,16 @@ class StartupAdvisor():
     @agent
     def trend_analyst(self) -> Agent:
         return Agent(
-            role="Market Trend Analyst",
-            goal="""
-            Search the current market and identify trending domains,
-            trending jobs, emerging technologies, customer demand,
-            and business opportunities.
-            """,
-            backstory="""
-            Expert in market research and technology trends.
-             Continuously analyzes global markets and recommends
-            high-demand industries and business opportunities.
-            """,
+            config=self.agents_config['trend_analyst'],
             tools=[SerperDevTool()],
-            llm="gemini/gemini-2.5-flash",
+            llm=groq_llm,
             verbose=True
         )
     # 🔥 Trend Task
     @task
     def trend_analysis_task(self) -> Task:
          return Task(
-            description="""
-            Search the current market and identify:
-
-            1. Top trending domains
-            2. Trending jobs and career opportunities
-            3. Emerging technologies
-            4. Customer demand
-            5. Industry growth opportunities
-            6. Recommended business and startup ideas
-
-            Use the latest information from the web.
-            """,
-            expected_output="""
-            A detailed report containing:
-            - Trending Domains
-            - Trending Jobs
-            - Emerging Technologies
-            - Customer Demand
-            - Industry Growth Opportunities
-            - Business Recommendations
-            """,
+            config=self.tasks_config['trend_analysis_task'],
             agent=self.trend_analyst(),
             output_file="report.md"
         )
@@ -59,7 +39,7 @@ class StartupAdvisor():
     def business_discovery_agent(self) -> Agent:
         return Agent(
             config=self.agents_config['business_discovery_agent'],
-            llm="gemini/gemini-2.5-flash",
+            llm=groq_llm,
             verbose=True
         )
 
@@ -76,7 +56,7 @@ class StartupAdvisor():
         return Agent(
             config=self.agents_config['financial_agent'],
             tools=[SerperDevTool()],
-            llm="gemini/gemini-2.5-flash",
+            llm=groq_llm,
             verbose=True
     )
 
@@ -120,7 +100,7 @@ class StartupAdvisor():
         return Agent(
             config=self.agents_config['business_validation_agent'],
             tools=[SerperDevTool()],
-            llm="gemini/gemini-2.5-flash",
+            llm=groq_llm,
             verbose=True
     )
 
@@ -140,6 +120,13 @@ class StartupAdvisor():
             agents=[self.business_validation_agent()],
             tasks=[self.business_validation_task()],
             process=Process.sequential
-    )
+        )
 
-
+    @crew
+    def crew(self) -> Crew:
+        """Combined crew used by main.py default functions."""
+        return Crew(
+            agents=self.agents,
+            tasks=self.tasks,
+            process=Process.sequential
+        )

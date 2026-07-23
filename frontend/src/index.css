@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Luminous Intelligence — Design System Tokens
+   Based on frontend/final_ui/design-system/DESIGN.md
+   ============================================================ */
+
+@theme {
+  /* --- Fonts --- */
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Dynamic Colors (Material Design 3) --- */
+  --color-surface: var(--theme-surface);
+  --color-surface-dim: var(--theme-surface-dim);
+  --color-surface-bright: var(--theme-surface-bright);
+  --color-surface-container-lowest: var(--theme-surface-container-lowest);
+  --color-surface-container-low: var(--theme-surface-container-low);
+  --color-surface-container: var(--theme-surface-container);
+  --color-surface-container-high: var(--theme-surface-container-high);
+  --color-surface-container-highest: var(--theme-surface-container-highest);
+  --color-on-surface: var(--theme-on-surface);
+  --color-on-surface-variant: var(--theme-on-surface-variant);
+  
+  --color-primary: var(--theme-primary);
+  --color-on-primary: var(--theme-on-primary);
+  --color-primary-container: var(--theme-primary-container);
+  --color-on-primary-container: var(--theme-on-primary-container);
+  
+  --color-outline: var(--theme-outline);
+  --color-outline-variant: var(--theme-outline-variant);
+
+  --color-secondary: #50616b;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d3e5f2;
+  --color-on-secondary-container: #566772;
+  --color-secondary-fixed: #d3e5f2;
+  --color-secondary-fixed-dim: #b7c9d5;
+
+  --color-tertiary: #1b1707;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #302c19;
+  --color-on-tertiary-container: #9a937a;
+  --color-tertiary-fixed: #ebe2c6;
+  --color-tertiary-fixed-dim: #cec6ab;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Agent Accents */
+  --color-agent-trend: #DCEEFB;
+  --color-agent-discovery: #D8F3E8;
+  --color-agent-financial: #FDE6D8;
+  --color-agent-validation: #E8DFFB;
+
+  --color-emerald-500: #10b981;
+  --color-amber-500: #f59e0b;
+  --color-red-500: #ef4444;
+  --color-blue-500: #3b82f6;
+  --color-purple-500: #8b5cf6;
+  --color-pink-500: #ec4899;
+
+  /* --- Spacing (8px rhythm) --- */
+  --spacing-base: 8px;
+  --spacing-gutter: 24px;
+  --spacing-stack-sm: 12px;
+  --spacing-stack-md: 24px;
+  --spacing-stack-lg: 48px;
+  --spacing-container-padding: 32px;
+
+  /* --- Border Radius --- */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* --- Base Styles --- */
+@layer base {
+  :root {
+    --theme-surface: #fdf8f9;
+    --theme-surface-dim: #ddd9da;
+    --theme-surface-bright: #fdf8f9;
+    --theme-surface-container-lowest: #ffffff;
+    --theme-surface-container-low: #f7f2f4;
+    --theme-surface-container: #f1edee;
+    --theme-surface-container-high: #ebe7e8;
+    --theme-surface-container-highest: #e6e1e3;
+    --theme-on-surface: #1c1b1c;
+    --theme-on-surface-variant: #48464c;
+    --theme-primary: #191623;
+    --theme-on-primary: #ffffff;
+    --theme-primary-container: #2e2a38;
+    --theme-on-primary-container: #9791a2;
+    --theme-outline: #79767c;
+    --theme-outline-variant: #cac5cc;
+  }
+
+  .dark {
+    --theme-surface: #121212;
+    --theme-surface-dim: #1c1c1c;
+    --theme-surface-bright: #2d2d2d;
+    --theme-surface-container-lowest: #0a0a0a;
+    --theme-surface-container-low: #171717;
+    --theme-surface-container: #1e1e1e;
+    --theme-surface-container-high: #262626;
+    --theme-surface-container-highest: #333333;
+    --theme-on-surface: #e5e5e5;
+    --theme-on-surface-variant: #a3a3a3;
+    --theme-primary: #a78bfa;
+    --theme-on-primary: #1e1b4b;
+    --theme-primary-container: #4c1d95;
+    --theme-on-primary-container: #ede9fe;
+    --theme-outline: #525252;
+    --theme-outline-variant: #404040;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--color-primary);
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-outline-variant);
+    border-radius: 3px;
+  }
+}
+
+/* --- Glassmorphism utilities --- */
+@layer utilities {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .dark .glass-panel {
+    background: rgba(18, 18, 18, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-panel-high {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .dark .glass-panel-high {
+    background: rgba(18, 18, 18, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-on-surface-variant) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .animate-spring-in {
+    animation: springIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes springIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* --- Print styles --- */
+@media print {
+  .print\\:hidden { display: none !important; }
+  body { background: white; color: black; }
+}

@@ -21,6 +21,23 @@ trend_analysis_task:
     5. Industry Growth Opportunities
     6. Recommended Business and Startup Ideas.
 
+    IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
+    ```json
+    {
+      "cagr": 15.5,
+      "top_region": "North America",
+      "market_size": 50000000,
+      "keywords": ["AI", "Sustainability"],
+      "historical_growth": [
+        {"year": "Y1", "growth": 10},
+        {"year": "Y2", "growth": 12},
+        {"year": "Y3", "growth": 15},
+        {"year": "Y4", "growth": 18},
+        {"year": "Y5", "growth": 20}
+      ]
+    }
+    ```
+
 business_discovery_task:
   description: >
     Analyze the domain {field} with a budget of {budget}.
@@ -47,6 +64,18 @@ business_discovery_task:
     7. Risks
     8. Final Recommendation.
 
+    IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
+    ```json
+    {
+      "opportunity_score": 85,
+      "competition_level": "Medium",
+      "strengths": ["Strong demand", "Low entry barrier"],
+      "weaknesses": ["High initial cost"],
+      "opportunities": ["Global expansion"],
+      "threats": ["New regulations"]
+    }
+    ```
+
 financial_analysis_task:
   description: >
     Based on the following business report:
@@ -70,6 +99,17 @@ financial_analysis_task:
     - Risk Analysis
     - Financial Recommendations
 
+    IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
+    ```json
+    {
+      "initial_investment": 50000,
+      "projected_roi": 120,
+      "break_even_month": 8,
+      "first_year_revenue": 150000,
+      "burn_rate": 5000
+    }
+    ```
+
 validation_task:
   description: >
     Based on the following financial report:
@@ -85,22 +125,24 @@ validation_task:
     5. Growth Potential
     6. Final Recommendation (Good / Moderate / Not Recommended)
 
-    Also generate dashboard metrics.
+    Also generate dashboard metrics, category scores, projected 7-year market growth, recommended revenue mix, a detailed risk assessment, and recommended next steps.
 
   expected_output: >
     ## Business Validation Report
+    [Provide your detailed text report here]
 
-    Market Demand: XX%
-    Success Probability: XX%
-    Risk Percentage: XX%
-    Competition Level: Low/Medium/High
-    Growth Potential: XX%
-
-    Final Recommendation:
-    GOOD STARTUP IDEA / MODERATE / NOT RECOMMENDED
-
-    Dashboard Metrics:
-    - Demand Score: XX/100
-    - Growth Score: XX/100
-    - Investment Score: XX/100
-    - Risk Score: XX/100
+    IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
+    ```json
+    {
+      "market_demand": 85,
+      "success_probability": 75,
+      "risk_percentage": 25,
+      "competition_level": "Low",
+      "growth_potential": 90,
+      "final_recommendation": "GOOD",
+      "demand_score": 88,
+      "growth_score": 92,
+      "investment_score": 80,
+      "risk_score": 25
+    }
+    ```

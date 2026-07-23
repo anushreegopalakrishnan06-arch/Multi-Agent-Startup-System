@@ -2,19 +2,20 @@
 import sys
 import warnings
 
+import os
 from datetime import datetime
 
-from startup_advisor.crew import StartupAdvisor
-
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 from dotenv import load_dotenv
 load_dotenv()
-import os
+
+warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+from startup_advisor.crew import StartupAdvisor  # noqa: E402
 
 
 
 
-print("GEMINI KEY:", os.getenv("GEMINI_API_KEY"))
+print("GROQ KEY:", os.getenv("GROQ_API_KEY"))
 print("SERPER:", os.getenv("SERPER_API_KEY"))
 def run():
     try:
