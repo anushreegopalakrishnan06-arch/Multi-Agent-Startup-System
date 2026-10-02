@@ -1,0 +1,9 @@
+{
+  "extraPaths": [
+    ".",
+    "backend",
+    "security",
+    "src"
+  ],
+  "reportMissingImports": "warning"
+}

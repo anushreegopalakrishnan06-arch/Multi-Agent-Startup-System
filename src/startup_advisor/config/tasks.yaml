@@ -1,103 +1,140 @@
 trend_analysis_task:
   description: >
-    Search the current market using web sources and identify:
+    Research the current global market landscape and analyze the top high-growth industry sectors.
+    
+    Synthesize your findings into a comprehensive executive trend report covering:
+    - Top Trending Industry Sectors & Verticals (e.g. AI-driven SaaS, CleanTech, HealthTech, etc. - NOT internet URL extensions!)
+    - In-Demand Career Opportunities & Skills
+    - Emerging Technologies transforming business models
+    - Current Customer Demand Dynamics & Consumer Behavior
+    - Industry Growth Rates and Investment Opportunities
+    - High-Potential Startup and Business Ideas
 
-    - Top trending domains
-    - Trending jobs and career opportunities
-    - Emerging technologies
-    - Customer demand
-    - Industry growth opportunities
-    - Recommended startup and business ideas
-
-    Provide the latest market information and recommendations.
+    PRESENTATION & READABILITY RULES:
+    - Write like an executive strategy consultant (McKinsey / Gartner style).
+    - Use clean Markdown: descriptive headers (## and ###), organized bullet points with **bold takeaways**, and comparative Markdown tables.
+    - NEVER copy-paste raw scraped search text, raw URLs, query snippets, or citation tags (such as 【5†L1-L3】).
+    - Every section must be coherent, fluid, and easily readable for founders and investors.
 
   expected_output: >
-    A detailed report containing:
+    A comprehensive, beautifully formatted Markdown report containing:
 
-    1. Trending Domains
-    2. Trending Jobs
-    3. Emerging Technologies
-    4. Customer Demand
-    5. Industry Growth Opportunities
-    6. Recommended Business and Startup Ideas.
+    ## 1. Executive Summary & Market Landscape
+    ## 2. Top Trending Industry Sectors & Verticals
+    (Include a comparative Markdown table with Rank, Sector, Growth Driver, and Target Market)
+    ## 3. In-Demand Skills & Career Opportunities
+    (Include roles, key skill sets, and hiring momentum)
+    ## 4. Emerging Transformational Technologies
+    (Key technologies, commercial applications, and business adoption trends)
+    ## 5. Customer Demand Dynamics & Consumer Shifts
+    (What modern customers are actively paying for and market pain points)
+    ## 6. High-Potential Startup & Business Opportunities
+    (Actionable business models and why each is viable now)
 
     IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
     ```json
     {
-      "cagr": 15.5,
+      "cagr": 18.5,
       "top_region": "North America",
-      "market_size": 50000000,
-      "keywords": ["AI", "Sustainability"],
+      "market_size": 150000000000,
+      "keywords": ["AI Automation", "Sustainability", "Next-Gen SaaS"],
       "historical_growth": [
-        {"year": "Y1", "growth": 10},
-        {"year": "Y2", "growth": 12},
-        {"year": "Y3", "growth": 15},
-        {"year": "Y4", "growth": 18},
-        {"year": "Y5", "growth": 20}
+        {"year": "2021", "growth": 11.5, "milestone": "Digital acceleration & cloud surge"},
+        {"year": "2022", "growth": 13.2, "milestone": "Efficiency focus & consolidation"},
+        {"year": "2023", "growth": 16.8, "milestone": "Generative AI inflection point"},
+        {"year": "2024", "growth": 20.4, "milestone": "Enterprise agentic deployment"},
+        {"year": "2025", "growth": 24.1, "milestone": "Autonomous systems integration"},
+        {"year": "2026", "growth": 27.5, "milestone": "Pervasive AI & edge scale (Current)"}
+      ],
+      "sectors": [
+        {"name": "AI-Driven SaaS", "cagr": 28.5},
+        {"name": "CleanTech", "cagr": 22.0},
+        {"name": "HealthTech", "cagr": 19.5},
+        {"name": "Cyber-Resilience", "cagr": 17.0},
+        {"name": "Quantum Cloud", "cagr": 32.0}
       ]
     }
     ```
 
 business_discovery_task:
   description: >
-    Analyze the domain {field} with a budget of {budget}.
+    Conduct a strategic business discovery analysis for the domain "{field}" tailored to an initial budget of ${budget}.
 
-    Identify:
+    Synthesize concrete, actionable business recommendations covering:
+    - Top 3 to 5 realistic business models that can be launched within this budget
+    - Key team roles, staffing timeline, and approximate compensation
+    - Current market demand indicators and customer willingness to pay
+    - Competitor landscape and strategic market gaps to exploit
+    - Diversified revenue streams and realistic pricing models
+    - Budget allocation breakdown across capital expenditures and operating runway
+    - Comprehensive SWOT Analysis (Strengths, Weaknesses, Opportunities, Threats)
+    - Strategic recommendations and next steps for the founder
 
-    - Businesses that can be started
-    - Jobs suitable for this domain and budget
-    - Current market demand
-    - Competitors
-    - Revenue opportunities
-    - Budget feasibility
-    - Risks and recommendations
+    PRESENTATION & READABILITY RULES:
+    - Structure the report cleanly with executive headers, organized Markdown tables, and crisp bullet points.
+    - NEVER output raw scraped text, broken search fragments, or raw link dumps.
+    - All advice must be practical, specific to "{field}", and feasible within the ${budget} budget.
 
   expected_output: >
-    A detailed report containing:
+    A detailed, executive-ready Business Discovery Report formatted as:
 
-    1. Suggested Businesses
-    2. Suggested Jobs
-    3. Market Demand Analysis
-    4. Competitor Analysis
-    5. Revenue Opportunities
-    6. Budget Feasibility
-    7. Risks
-    8. Final Recommendation.
+    ## 1. Top Recommended Business Models
+    (Markdown table: Concept, Value Proposition, Target Audience, Capex Fit)
+    ## 2. Staffing & Talent Acquisition Roadmap
+    (Markdown table: Role, Core Responsibility, Estimated Cost, Hiring Phase)
+    ## 3. Market Demand & Customer Dynamics
+    ## 4. Competitive Landscape & Differentiators
+    (Incumbents, market weaknesses, and your competitive edge)
+    ## 5. Monetization Strategy & Revenue Projections
+    ## 6. Budget Allocation & Feasibility Breakdown
+    (Clear table detailing how the ${budget} budget is allocated)
+    ## 7. SWOT Strategic Matrix
+    ## 8. Strategic Executive Verdict & Next Steps
 
     IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
     ```json
     {
       "opportunity_score": 85,
       "competition_level": "Medium",
-      "strengths": ["Strong demand", "Low entry barrier"],
-      "weaknesses": ["High initial cost"],
-      "opportunities": ["Global expansion"],
-      "threats": ["New regulations"]
+      "strengths": ["Clear value proposition", "Agile low-overhead operations"],
+      "weaknesses": ["Initial brand awareness", "Working capital constraints"],
+      "opportunities": ["Unserved regional demand", "High-margin digital add-ons"],
+      "threats": ["Established incumbents", "Shifting supplier costs"]
     }
     ```
 
 financial_analysis_task:
   description: >
-    Based on the following business report:
+    Based on the following business discovery report:
 
     {business_report}
 
-    Generate a detailed financial report including:
-    - Estimated Revenue
-    - Required Investment
-    - ROI Percentage
-    - Break-even Period
-    - Financial Risks
-    - Financial Recommendations
+    Formulate a rigorous, transparent financial blueprint and growth model.
+
+    Analyze and detail:
+    - Initial Capital Expenditure (CapEx) breakdown and first 6 months Operating Runway (OpEx)
+    - Revenue forecast modeling across different business tiers
+    - Projected ROI percentage and financial returns over 1 to 3 years
+    - Break-even timeline and monthly burn rate estimation
+    - Financial risk factors, sensitivity analysis, and mitigation levers
+    - CFO-level financial recommendations for capital efficiency
+
+    PRESENTATION & READABILITY RULES:
+    - Present financial data with clear tables, formatted numbers, and transparent assumptions.
+    - Do NOT output unstructured notes or raw scraped fragments.
+    - Explain the logic behind all financial calculations clearly.
 
   expected_output: >
-    A detailed financial report with:
-    - Revenue Estimation
-    - Investment Requirement
-    - ROI %
-    - Break-even Analysis
-    - Risk Analysis
-    - Financial Recommendations
+    A structured, founder-friendly Financial Blueprint containing:
+
+    ## 1. Capital Allocation & Initial Investment (CapEx)
+    (Markdown table of startup expenses and reserve runway)
+    ## 2. Year-1 Revenue Projections & Unit Economics
+    (Markdown table with revenue streams, pricing, volume, and projected gross income)
+    ## 3. Return on Investment (ROI) & Break-Even Analysis
+    ## 4. Cash Flow & Monthly Operating Burn Rate
+    ## 5. Financial Risk Analysis & Sensitivity Scenarios
+    ## 6. Strategic Financial Recommendations & Funding Milestones
 
     IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
     ```json
@@ -112,24 +149,36 @@ financial_analysis_task:
 
 validation_task:
   description: >
-    Based on the following financial report:
+    Based on the following financial and business report:
 
     {financial_report}
 
-    Validate the startup idea and provide:
+    Conduct an institutional-grade startup validation and investment feasibility assessment.
 
-    1. Market Demand Percentage
-    2. Success Probability Percentage
-    3. Risk Percentage
-    4. Competition Level
-    5. Growth Potential
-    6. Final Recommendation (Good / Moderate / Not Recommended)
+    Evaluate:
+    - Overall Market Demand Percentage and Product-Market Fit signals
+    - Probabilistic Success Rate based on market benchmarks
+    - Risk Percentage and multi-factor vulnerability assessment
+    - Competitive Moat and barriers to entry
+    - Scalability and 5-Year Growth Potential
+    - Definitive Investment Verdict: GO (Strong Recommendation), HOLD (Moderate / Conditional), or NO-GO (High Risk)
+    - 90-Day tactical execution roadmap for founders
 
-    Also generate dashboard metrics, category scores, projected 7-year market growth, recommended revenue mix, a detailed risk assessment, and recommended next steps.
+    PRESENTATION & READABILITY RULES:
+    - Highly structured, clear headings, polished executive summary.
+    - Zero raw scraped fragments, citation codes, or unstructured text.
 
   expected_output: >
-    ## Business Validation Report
-    [Provide your detailed text report here]
+    A definitive Business Validation & Investment Memo containing:
+
+    ## 1. Executive Viability Scorecard
+    (Markdown table summarizing Demand, Success Probability, Risk, and Verdict)
+    ## 2. Market Demand & Customer Validation Signals
+    ## 3. Competitive Moat & Growth Drivers
+    ## 4. Comprehensive Risk Matrix & Mitigation Blueprint
+    (Markdown table: Risk Factor, Severity, Likelihood, Mitigation Action)
+    ## 5. 90-Day Tactical Founder Roadmap
+    ## 6. Final Strategic Verdict & Recommendation
 
     IMPORTANT: You MUST append a strict JSON code block at the very end of your response containing the exact metrics, formatted exactly like this:
     ```json
@@ -145,4 +194,4 @@ validation_task:
       "investment_score": 80,
       "risk_score": 25
     }
-    ```
+    ```

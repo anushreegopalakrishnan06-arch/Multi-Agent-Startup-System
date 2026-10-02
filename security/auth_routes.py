@@ -8,6 +8,7 @@ GET  /api/auth/me      — Get current user from JWT
 """
 
 import os
+import sys
 import uuid
 import shutil
 from datetime import datetime, timedelta, timezone
@@ -17,17 +18,33 @@ from fastapi import APIRouter, HTTPException, Depends, Header, UploadFile, File,
 from bson import ObjectId
 from pydantic import BaseModel
 
-from passlib.context import CryptContext
+import bcrypt
 from jose import jwt, JWTError
 
-from db import users_collection
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+try:
+    from backend.db import users_collection
+except ImportError:
+    from db import users_collection
 
 # --- Config ---
 JWT_SECRET = os.getenv("JWT_SECRET", "fallback-insecure-secret-change-me")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_DAYS = 7
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def _hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8")[:72], bcrypt.gensalt()).decode("utf-8")
+
+
+def _verify_password(password: str, hashed: str) -> bool:
+    try:
+        return bcrypt.checkpw(password.encode("utf-8")[:72], hashed.encode("utf-8"))
+    except Exception:
+        return False
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -123,7 +140,7 @@ async def signup(req: SignupRequest):
         raise HTTPException(status_code=409, detail="An account with this email already exists")
 
     # Hash password and insert
-    hashed = pwd_context.hash(req.password)
+    hashed = _hash_password(req.password)
     user_doc = {
         "email": req.email.lower().strip(),
         "password_hash": hashed,
@@ -160,7 +177,7 @@ async def login(req: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     # Verify password
-    if not user.get("password_hash") or not pwd_context.verify(req.password, user["password_hash"]):
+    if not user.get("password_hash") or not _verify_password(req.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     user_id = str(user["_id"])
@@ -286,37 +303,54 @@ async def update_profile(
     users = users_collection()
     update_data = {}
     
-    if name is not None: update_data["name"] = name
-    if mobile is not None: update_data["mobile"] = mobile
-    if company is not None: update_data["company"] = company
-    if designation is not None: update_data["designation"] = designation
-    if country is not None: update_data["country"] = country
-    if timezone is not None: update_data["timezone"] = timezone
-    
-    if picture:
-        os.makedirs("uploads", exist_ok=True)
-        ext = picture.filename.split(".")[-1] if "." in picture.filename else "jpg"
+    if name is not None:
+        update_data["name"] = name
+    if mobile is not None:
+        update_data["mobile"] = mobile
+    if company is not None:
+        update_data["company"] = company
+    if designation is not None:
+        update_data["designation"] = designation
+    if country is not None:
+        update_data["country"] = country
+    if timezone is not None:
+        update_data["timezone"] = timezone
+
+    if picture and picture.filename and picture.filename.strip():
+        uploads_dir = os.path.join(ROOT_DIR, "uploads")
+        os.makedirs(uploads_dir, exist_ok=True)
+        raw_filename = picture.filename.strip()
+        ext = raw_filename.rsplit(".", 1)[-1].lower() if "." in raw_filename else "jpg"
+        if not ext.isalnum() or len(ext) > 5:
+            ext = "jpg"
         filename = f"{uuid.uuid4()}.{ext}"
-        filepath = os.path.join("uploads", filename)
-        
+        filepath = os.path.join(uploads_dir, filename)
+
         with open(filepath, "wb") as buffer:
             shutil.copyfileobj(picture.file, buffer)
-            
+
         update_data["picture"] = f"/api/uploads/{filename}"
-        
+
+    # Safe lookup supporting both MongoDB ObjectId and local fallback string IDs
+    user_query = {"email": current_user["email"]}
+    if current_user.get("_id"):
+        try:
+            user_query = {"_id": ObjectId(str(current_user["_id"]))}
+        except Exception:
+            user_query = {"_id": str(current_user["_id"])}
+
     if update_data:
-        await users.update_one(
-            {"_id": ObjectId(current_user["_id"])},
-            {"$set": update_data}
-        )
-        
-    updated_user = await users.find_one({"_id": ObjectId(current_user["_id"])})
-    
+        await users.update_one(user_query, {"$set": update_data})
+
+    updated_user = await users.find_one(user_query)
+    if not updated_user:
+        updated_user = current_user
+
     return {
         "status": "success",
         "user": {
-            "id": str(updated_user["_id"]),
-            "email": updated_user["email"],
+            "id": str(updated_user.get("_id", current_user.get("_id", ""))),
+            "email": updated_user.get("email", current_user.get("email")),
             "name": updated_user.get("name"),
             "picture": updated_user.get("picture"),
             "mobile": updated_user.get("mobile"),
@@ -324,6 +358,6 @@ async def update_profile(
             "designation": updated_user.get("designation"),
             "country": updated_user.get("country"),
             "timezone": updated_user.get("timezone"),
-            "is_admin": is_admin_check(updated_user["email"]),
+            "is_admin": is_admin_check(updated_user.get("email", "")),
         }
     }

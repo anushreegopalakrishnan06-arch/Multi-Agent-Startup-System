@@ -1,5 +1,13 @@
-
 venv311/
+venv*/
 .env
+.env.*
+!.env.example
 __pycache__/
 *.pyc
+outputs/local_db.json
+uploads/*
+!uploads/.gitkeep
+.vscode/
+node_modules/
+dist/

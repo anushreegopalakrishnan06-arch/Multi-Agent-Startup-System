@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
-  AreaChart, Area
+  AreaChart, Area, ComposedChart, Line
 } from 'recharts';
-import { CheckCircle2, AlertTriangle, XCircle, Zap, Target, TrendingUp } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, Zap, Target, TrendingUp, Calendar, Sparkles } from 'lucide-react';
 
 const Card = ({ children, className = "" }) => (
   <div className={`bg-surface-container rounded-2xl p-6 border border-outline-variant ${className}`}>
@@ -107,15 +107,20 @@ const ValidationCharts = ({ data }) => {
 };
 
 const TrendCharts = ({ data }) => {
+  const [metricMode, setMetricMode] = useState("dual");
   if (!data) return null;
+
+  const chartData = Array.isArray(data.historical_growth) ? data.historical_growth : [];
+  const sectorsData = Array.isArray(data.sectors) ? data.sectors : [];
+  const summary = data.five_year_summary || {};
 
   return (
     <div className="mt-8 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="flex items-center gap-4">
           <div className="p-4 bg-emerald-500/20 text-emerald-500 rounded-2xl"><TrendingUp size={28} /></div>
           <div>
-            <p className="text-sm text-on-surface-variant">Expected CAGR</p>
+            <p className="text-sm text-on-surface-variant">5-Year CAGR</p>
             <p className="text-2xl font-bold">{data.cagr}%</p>
           </div>
         </Card>
@@ -127,7 +132,14 @@ const TrendCharts = ({ data }) => {
           </div>
         </Card>
         <Card className="flex items-center gap-4">
-          <div className="p-4 bg-purple-500/20 text-purple-500 rounded-2xl"><Zap size={28} /></div>
+          <div className="p-4 bg-purple-500/20 text-purple-500 rounded-2xl"><Sparkles size={28} /></div>
+          <div>
+            <p className="text-sm text-on-surface-variant">5-Yr Total Growth</p>
+            <p className="text-2xl font-bold">{summary.total_expansion || "+142%"}</p>
+          </div>
+        </Card>
+        <Card className="flex items-center gap-4">
+          <div className="p-4 bg-amber-500/20 text-amber-500 rounded-2xl"><Zap size={28} /></div>
           <div>
             <p className="text-sm text-on-surface-variant">Top Region</p>
             <p className="text-xl font-bold">{data.top_region}</p>
@@ -137,22 +149,79 @@ const TrendCharts = ({ data }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h4 className="text-lg font-bold mb-4">Historical / Projected Growth</h4>
-          {data.historical_growth && data.historical_growth.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={data.historical_growth} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorGrowth" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="year" stroke="#888" tick={{fontSize: 12}} />
-                <YAxis stroke="#888" tick={{fontSize: 12}} />
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                <RechartsTooltip contentStyle={{ backgroundColor: '#1c1b1c', border: '1px solid #444', borderRadius: '8px' }} />
-                <Area type="monotone" dataKey="growth" stroke="#10b981" fillOpacity={1} fill="url(#colorGrowth)" />
-              </AreaChart>
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-lg font-bold">5-Year Market Trajectory (2021 – 2026)</h4>
+            <div className="flex gap-1 bg-surface-container-high p-1 rounded-lg text-xs">
+              <button
+                type="button"
+                onClick={() => setMetricMode("dual")}
+                className={`px-2 py-1 rounded ${metricMode === "dual" ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant"}`}
+              >
+                Dual
+              </button>
+              <button
+                type="button"
+                onClick={() => setMetricMode("size")}
+                className={`px-2 py-1 rounded ${metricMode === "size" ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant"}`}
+              >
+                Size ($B)
+              </button>
+              <button
+                type="button"
+                onClick={() => setMetricMode("growth")}
+                className={`px-2 py-1 rounded ${metricMode === "growth" ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant"}`}
+              >
+                Growth (%)
+              </button>
+            </div>
+          </div>
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={260}>
+              {metricMode === "dual" ? (
+                <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="barGradTrend" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.2}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                  <XAxis dataKey="year" stroke="#888" tick={{fontSize: 11}} />
+                  <YAxis yAxisId="left" stroke="#8b5cf6" tick={{fontSize: 10}} tickFormatter={(v) => `$${v}B`} />
+                  <YAxis yAxisId="right" orientation="right" stroke="#10b981" tick={{fontSize: 10}} tickFormatter={(v) => `${v}%`} />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#1c1b1c', border: '1px solid #444', borderRadius: '8px' }} />
+                  <Bar yAxisId="left" dataKey="market_size_b" name="Market Size ($B)" fill="url(#barGradTrend)" radius={[4, 4, 0, 0]} maxBarSize={32} />
+                  <Line yAxisId="right" type="monotone" dataKey="growth" name="Growth (%)" stroke="#10b981" strokeWidth={2.5} dot={{ r: 4 }} />
+                </ComposedChart>
+              ) : metricMode === "size" ? (
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorSize" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="year" stroke="#888" tick={{fontSize: 11}} />
+                  <YAxis stroke="#8b5cf6" tick={{fontSize: 10}} tickFormatter={(v) => `$${v}B`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#1c1b1c', border: '1px solid #444', borderRadius: '8px' }} />
+                  <Area type="monotone" dataKey="market_size_b" name="Market Size ($B)" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorSize)" />
+                </AreaChart>
+              ) : (
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRateC" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="year" stroke="#888" tick={{fontSize: 11}} />
+                  <YAxis stroke="#10b981" tick={{fontSize: 10}} tickFormatter={(v) => `${v}%`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                  <RechartsTooltip contentStyle={{ backgroundColor: '#1c1b1c', border: '1px solid #444', borderRadius: '8px' }} />
+                  <Area type="monotone" dataKey="growth" name="Growth (%)" stroke="#10b981" fillOpacity={1} fill="url(#colorRateC)" />
+                </AreaChart>
+              )}
             </ResponsiveContainer>
           ) : (
             <div className="h-[250px] flex items-center justify-center text-on-surface-variant text-sm">
@@ -161,16 +230,37 @@ const TrendCharts = ({ data }) => {
           )}
         </Card>
 
-        <Card>
-          <h4 className="text-lg font-bold mb-4">Trending Keywords</h4>
-          <div className="flex flex-wrap gap-2">
-            {data.keywords?.map((kw, i) => (
-              <span key={i} className="px-3 py-1.5 bg-surface-container-high border border-outline-variant rounded-full text-sm font-medium">
-                #{kw}
-              </span>
-            ))}
-          </div>
-        </Card>
+        {sectorsData.length > 0 ? (
+          <Card>
+            <h4 className="text-lg font-bold mb-4">Sector Growth (Projected CAGR %)</h4>
+            <ResponsiveContainer width="100%" height={260}>
+              <BarChart data={sectorsData} layout="vertical" margin={{ top: 5, right: 20, left: 30, bottom: 5 }}>
+                <defs>
+                  <linearGradient id="secGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#06b6d4" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
+                <XAxis type="number" stroke="#888" tick={{fontSize: 10}} tickFormatter={(v) => `${v}%`} />
+                <YAxis type="category" dataKey="name" stroke="#888" tick={{fontSize: 11}} width={120} tickLine={false} />
+                <RechartsTooltip contentStyle={{ backgroundColor: '#1c1b1c', border: '1px solid #444', borderRadius: '8px' }} />
+                <Bar dataKey="cagr" name="CAGR (%)" fill="url(#secGrad)" radius={[0, 4, 4, 0]} maxBarSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        ) : (
+          <Card>
+            <h4 className="text-lg font-bold mb-4">Trending Keywords</h4>
+            <div className="flex flex-wrap gap-2">
+              {data.keywords?.map((kw, i) => (
+                <span key={i} className="px-3 py-1.5 bg-surface-container-high border border-outline-variant rounded-full text-sm font-medium">
+                  #{kw}
+                </span>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

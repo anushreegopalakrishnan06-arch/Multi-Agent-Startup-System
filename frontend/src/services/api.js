@@ -17,6 +17,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor to handle expired/invalid JWT tokens
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("jwt_token");
+      localStorage.removeItem("user");
+      if (!window.location.pathname.includes("/login") && !window.location.pathname.includes("/signup")) {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // --- Auth API ---
 
 export const authSignup = async (email, password, name) => {

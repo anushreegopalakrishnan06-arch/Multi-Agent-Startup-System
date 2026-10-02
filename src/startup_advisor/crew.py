@@ -7,10 +7,16 @@ from crewai import LLM
 
 # LiteLLM requires OPENAI_API_KEY to be set when using the OpenAI provider format,
 # even if we pass api_key directly. We trick it by setting it to our Groq key.
+os.environ["PYTHONIOENCODING"] = "utf-8"
 os.environ["OPENAI_API_KEY"] = os.environ.get("GROQ_API_KEY", "")
 
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+OUTPUTS_DIR = os.path.join(ROOT_DIR, "outputs")
+os.makedirs(OUTPUTS_DIR, exist_ok=True)
+
 groq_llm = LLM(
-    model="llama-3.3-70b-versatile",
+    model="openai/gpt-oss-120b",
+    provider="openai",
     base_url="https://api.groq.com/openai/v1",
     api_key=os.environ.get("GROQ_API_KEY")
 )
@@ -32,7 +38,7 @@ class StartupAdvisor():
          return Task(
             config=self.tasks_config['trend_analysis_task'],
             agent=self.trend_analyst(),
-            output_file="report.md"
+            output_file=os.path.join(OUTPUTS_DIR, "report.md")
         )
     
     @agent
@@ -48,7 +54,7 @@ class StartupAdvisor():
         return Task(
             config=self.tasks_config['business_discovery_task'],
             agent=self.business_discovery_agent(),
-            output_file="business_report.md"
+            output_file=os.path.join(OUTPUTS_DIR, "business_report.md")
        )
     
     @agent
@@ -65,7 +71,7 @@ class StartupAdvisor():
         return Task(
             config=self.tasks_config['financial_analysis_task'],
             agent=self.financial_agent(),
-            output_file="financial_report.md"
+            output_file=os.path.join(OUTPUTS_DIR, "financial_report.md")
     )
 
 
@@ -110,7 +116,7 @@ class StartupAdvisor():
         return Task(
             config=self.tasks_config['validation_task'],
             agent=self.business_validation_agent(),
-            output_file="validation_report.md"
+            output_file=os.path.join(OUTPUTS_DIR, "validation_report.md")
     )
 
 

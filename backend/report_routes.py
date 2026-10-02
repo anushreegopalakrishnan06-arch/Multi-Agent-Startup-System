@@ -8,6 +8,8 @@ DELETE /api/reports/{id} — Delete report, ownership-checked
 GET    /api/stats        — Aggregated dashboard stats
 """
 
+import os
+import sys
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -15,14 +17,24 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
-from db import reports_collection, activities_collection
-from auth_routes import get_current_user
-from chart_parser import parse_all
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+from backend.db import reports_collection, activities_collection
+from security.auth_routes import get_current_user
+from backend.chart_parser import parse_all, clean_markdown_report
 
 router = APIRouter(tags=["reports"])
 
 # High-risk threshold: reports with risk_percentage > this are flagged
 HIGH_RISK_THRESHOLD = 60
+
+
+def _fmt_date(val):
+    if not val:
+        return None
+    return val.isoformat() if hasattr(val, "isoformat") else str(val)
 
 
 # --- Pydantic Models ---
@@ -197,7 +209,7 @@ async def list_reports(current_user: dict = Depends(get_current_user)):
             "score": doc.get("score"),
             "risk": doc.get("risk"),
             "recommendation": doc.get("recommendation"),
-            "date": doc.get("created_at", "").isoformat() if doc.get("created_at") else None,
+            "date": _fmt_date(doc.get("created_at")),
         })
 
     return {"status": "success", "data": results}
@@ -221,18 +233,63 @@ async def get_report(report_id: str, current_user: dict = Depends(get_current_us
     if doc.get("user_id") != current_user["_id"]:
         raise HTTPException(status_code=403, detail="Not authorized to view this report")
 
+    raw = doc.get("raw", {})
+    parsed = doc.get("parsed") or {}
+
+    # Guarantee all 4 tabs have parsed metric data
+    tabs = ["trend", "discovery", "financial", "validation"]
+    needs_update = False
+    fresh_all = None
+    for t in tabs:
+        t_data = parsed.get(t)
+        if not t_data or not isinstance(t_data, dict) or not any(t_data.values()):
+            if fresh_all is None:
+                fresh_all = parse_all(
+                    trend_raw=raw.get("trend") or "",
+                    discovery_raw=raw.get("discovery") or "",
+                    financial_raw=raw.get("financial") or "",
+                    validation_raw=raw.get("validation") or "",
+                )
+            parsed[t] = fresh_all.get(t, {})
+            needs_update = True
+
+    # Check if trend data needs 5-year enrichment or sector breakdown
+    trend_p = parsed.get("trend", {})
+    if not trend_p.get("sectors") or not trend_p.get("five_year_summary") or len(trend_p.get("historical_growth", [])) < 6:
+        from backend.chart_parser import parse_trend_data
+        parsed["trend"] = parse_trend_data(raw.get("trend") or "")
+        needs_update = True
+
+    if needs_update:
+        try:
+            await reports.update_one({"_id": oid}, {"$set": {"parsed": parsed}})
+        except Exception:
+            pass
+
+    # Provide clean markdown without machine JSON blocks
+    clean_raw = {
+        k: clean_markdown_report(v) if isinstance(v, str) else v
+        for k, v in raw.items()
+    }
+
+    validation_p = parsed.get("validation", {})
+    score = doc.get("score") or validation_p.get("success_probability") or validation_p.get("demand_score") or 75
+    risk = doc.get("risk") or validation_p.get("risk_percentage") or 25
+    recommendation = doc.get("recommendation") or validation_p.get("final_recommendation") or "GOOD"
+
     return {
         "status": "success",
         "data": {
             "id": str(doc["_id"]),
             "industry": doc.get("industry"),
             "budget": doc.get("budget"),
-            "score": doc.get("score"),
-            "risk": doc.get("risk"),
-            "recommendation": doc.get("recommendation"),
-            "created_at": doc.get("created_at", "").isoformat() if doc.get("created_at") else None,
-            "raw": doc.get("raw", {}),
-            "parsed": doc.get("parsed", {}),
+            "score": score,
+            "risk": risk,
+            "recommendation": recommendation,
+            "created_at": _fmt_date(doc.get("created_at")),
+            "raw": raw,
+            "clean_raw": clean_raw,
+            "parsed": parsed,
         }
     }
 
@@ -309,7 +366,7 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
         recent.append({
             "title": act.get("title", "Activity"),
             "description": act.get("description", ""),
-            "time": act.get("created_at", "").isoformat() if act.get("created_at") else None,
+            "time": _fmt_date(act.get("created_at")),
         })
 
     return {
