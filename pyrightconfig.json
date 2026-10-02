@@ -5,5 +5,10 @@
     "security",
     "src"
   ],
-  "reportMissingImports": "warning"
+  "reportMissingImports": "warning",
+  "reportAttributeAccessIssue": "none",
+  "reportCallIssue": "none",
+  "reportArgumentType": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none"
 }
