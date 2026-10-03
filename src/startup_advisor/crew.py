@@ -7,6 +7,8 @@ from typing import Any, Dict, List
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool
+import os
+from crewai import LLM
 
 # LiteLLM requires OPENAI_API_KEY to be set when using the OpenAI provider
 # format, even if we pass api_key directly. We trick it with our Groq key.
@@ -83,6 +85,7 @@ class StartupAdvisor():
             output_file=os.path.join(OUTPUTS_DIR, "financial_report.md")
         )
 
+
     @crew
     def trend_crew(self) -> Crew:
         return Crew(
@@ -107,6 +110,7 @@ class StartupAdvisor():
             process=Process.sequential
         )
 
+
     @agent
     def business_validation_agent(self) -> Agent:
         return Agent(  # type: ignore[call-arg]
@@ -123,6 +127,8 @@ class StartupAdvisor():
             agent=self.business_validation_agent(),
             output_file=os.path.join(OUTPUTS_DIR, "validation_report.md")
         )
+
+
 
     @crew
     def validation_crew(self) -> Crew:

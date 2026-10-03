@@ -3,6 +3,15 @@ import axios from "axios";
 // Backend URL — uses Vite proxy in development
 const API_URL = import.meta.env.VITE_API_URL || "";
 
+export const getWsUrl = (path = "/api/ws/logs") => {
+  const token = localStorage.getItem("jwt_token") || "";
+  const apiUrl = import.meta.env.VITE_API_URL || window.location.origin;
+  const isHttps = apiUrl.startsWith("https");
+  const wsProto = isHttps ? "wss:" : "ws:";
+  const host = apiUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return `${wsProto}//${host}${path}${path.includes("?") ? "&" : "?"}token=${token}`;
+};
+
 const api = axios.create({
   baseURL: API_URL,
 });

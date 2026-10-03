@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { runTrendAgent, runBusinessDiscovery, runFinancialAgent, runValidationAgent, saveReport } from "../services/api";
+import { runTrendAgent, runBusinessDiscovery, runFinancialAgent, runValidationAgent, saveReport, getWsUrl } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { motion } from "framer-motion";
 
@@ -18,8 +18,7 @@ export default function AgentWorkflow() {
   // WebSocket for live logs
   useEffect(() => {
     if (!currentUser?.is_admin) return;
-    const token = localStorage.getItem("jwt_token");
-    const ws = new WebSocket(`ws://localhost:8000/api/ws/logs?token=${token}`);
+    const ws = new WebSocket(getWsUrl("/api/ws/logs"));
     ws.onmessage = (event) => setLogs((prev) => [...prev, event.data]);
     return () => ws.close();
   }, [currentUser]);

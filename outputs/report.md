@@ -1,79 +1,78 @@
 ## 1. Executive Summary & Market Landscape  
 
-- **Global growth tempo:** The combined market of AI‑driven SaaS, CleanTech, HealthTech, and adjacent verticals is expanding at **≈ 18‑20 % CAGR** and is projected to exceed **$150 bn** in aggregate revenue by 2026.  
-- **Geographic hot‑spots:** North America remains the dominant market (≈ 45 % of total spend), followed by Europe and the Asia‑Pacific (particularly China, India, and South Korea).  
-- **Investment climate:** Venture capital deployment into high‑growth tech sectors topped **$75 bn** in 2024, with a noticeable shift toward “impact‑aligned” AI and sustainability solutions.  
-- **Talent pressure:** Demand for AI/ML engineers, data‑centric product managers, and sustainability‑focused strategists is outpacing supply, driving salary premiums of 25‑40 % year‑over‑year.  
+- **Overall growth** – The global high‑growth technology‑driven market is expanding at a **CAGR of ~18.5%** and is projected to exceed **$150 B** in total addressable revenue by 2026.  
+- **Geographic hot‑spot** – **North America** remains the largest ecosystem, contributing ~45% of total spend, followed by Europe and the Asia‑Pacific (with China & India driving rapid adoption).  
+- **Strategic inflection** – Generative AI, sustainability mandates, and the convergence of cloud‑edge‑quantum capabilities are reshaping every sector, creating a cascade of new business models and talent demands.  
 
-> **Takeaway:** Founders that embed AI‑automation, carbon‑reduction, or remote‑health capabilities into a SaaS model are positioned to capture the fastest‑growing share of enterprise spend.
+> **Takeaway:** Founders and investors should prioritize platforms that embed AI‑automation, decarbonization, and data‑centric health services, while building teams around advanced analytics, security, and quantum‑ready engineering.  
 
 ---
 
 ## 2. Top Trending Industry Sectors & Verticals  
 
-| Rank | Sector (Vertical) | 2024 Growth Driver | Primary Target Market (2024) |
-|------|-------------------|-------------------|------------------------------|
-| 1 | **AI‑Driven SaaS (Enterprise Automation)** | Generative AI, low‑code/no‑code platforms, “AI‑as‑a‑service” pricing | Large‑enterprise IT & mid‑market firms (≈ $110 bn) |
-| 2 | **CleanTech & Decarbonization** | ESG regulations, corporate net‑zero pledges, battery‑storage cost decline | Industrial manufacturers & utilities (≈ $70 bn) |
-| 3 | **HealthTech / Digital Therapeutics** | Tele‑health adoption, value‑based care, AI‑enabled diagnostics | Healthcare systems & payors (≈ $65 bn) |
-| 4 | **Cyber‑Resilience SaaS** | Rising ransomware frequency, remote‑work security gaps | SMBs & regulated sectors (≈ $45 bn) |
-| 5 | **Quantum‑Ready Cloud Services** | Early‑stage quantum‑computing workloads, government R&D funding | Research institutions & large tech firms (≈ $20 bn) |
+| Rank | Sector (Primary Vertical) | Core Growth Driver | Primary Target Market |
+|------|---------------------------|--------------------|-----------------------|
+| **1** | **AI‑Driven SaaS** | Generative AI, agentic software, low‑code/auto‑ML | Enterprises seeking productivity AI, B2B SaaS platforms |
+| **2** | **CleanTech (Energy & Decarbonization)** | Carbon‑pricing, ESG mandates, renewable‑grid integration | Utilities, heavy‑industry, ESG‑focused investors |
+| **3** | **HealthTech & Digital Health** | Tele‑medicine adoption, AI diagnostics, wearables | Hospitals, payors, consumer health & wellness |
+| **4** | **Cyber‑Resilience & Zero‑Trust** | Rising ransomware, regulatory pressure (e.g., GDPR, CCPA) | Mid‑large enterprises, critical infrastructure |
+| **5** | **Quantum Cloud Services** | Quantum‑ready algorithms, cloud‑based access, government R&D funding | Large enterprises, pharma, finance, research labs |
 
-> **Takeaway:** AI‑driven SaaS leads both in absolute market size and growth velocity, while CleanTech and HealthTech offer the strongest “impact‑plus‑profit” narratives for investors.
+> **Takeaway:** All five sectors post‑2024 CAGR > 20%, with **Quantum Cloud** (≈32%) and **AI‑Driven SaaS** (≈28.5%) delivering the steepest upside.
 
 ---
 
 ## 3. In‑Demand Skills & Career Opportunities  
 
-| Role | Core Skill Set(s) | Hiring Momentum (YoY) | Typical Compensation (US) |
-|------|-------------------|----------------------|---------------------------|
-| **Generative AI Engineer** | Prompt engineering, LLM fine‑tuning, MLOps, Python | +48 % | $180‑250 k |
-| **Sustainability Product Manager** | ESG frameworks, lifecycle analysis, cross‑functional road‑mapping | +38 % | $150‑200 k |
-| **Digital Health Clinical Informatics Lead** | FDA‑software regulations, HL7/FHIR, AI‑driven diagnostics | +32 % | $170‑230 k |
-| **Zero‑Trust Security Architect** | Identity‑centric security, cloud‑native firewalls, threat‑intel platforms | +29 % | $160‑210 k |
-| **Quantum Algorithm Developer** | Quantum circuit design, Q# / Cirq, high‑performance simulation | +24 % | $190‑260 k |
+| Role | Key Skill Sets | Hiring Momentum (2024‑2026) |
+|------|----------------|----------------------------|
+| **AI Prompt Engineer / Generative AI Product Manager** | Prompt design, LLM fine‑tuning, ethics & bias mitigation | ★★ Very high – 35% YoY increase in openings |
+| **Sustainability Data Analyst** | Carbon accounting, GIS, Python/R for emissions modeling | ★ High – 25% YoY growth |
+| **Digital Health Clinical Engineer** | Regulatory (FDA/EMA), health‑data interoperability, AI‑assisted diagnostics | ★★ Very high – 30% YoY growth |
+| **Zero‑Trust Security Architect** | Identity‑centric design, SASE, cloud‑native security stacks | ★★ Very high – 40% YoY growth |
+| **Quantum Algorithm Developer** | Quantum programming (Q#, Cirq), linear algebra, hybrid classical‑quantum workflow | ★ Emerging – 20% YoY increase, talent scarcity |
 
-> **Takeaway:** Companies are competing fiercely for hybrid talent that blends deep technical expertise with domain‑specific regulatory knowledge (e.g., AI + compliance, sustainability + finance).
+> **Takeaway:** Talent pipelines are tightening; up‑skilling in AI‑prompting, sustainability analytics, and quantum programming will command premium compensation.
 
 ---
 
 ## 4. Emerging Transformational Technologies  
 
-| Technology | Commercial Applications | Adoption Trend (2023‑2025) |
-|------------|------------------------|---------------------------|
-| **Generative AI (LLM‑based SaaS)** | Automated content creation, code assistance, customer‑service copilots | 70 % of top‑100 SaaS firms have launched an AI add‑on; ARR growth > 35 % |
-| **Carbon‑Capture‑as‑Service (CCaaS)** | On‑site capture modules, subscription‑based carbon offsets | Early adopters in heavy industry; projected 20 % YoY uptake |
-| **Digital Twin for Healthcare** | Real‑time patient modeling, predictive treatment pathways | Piloted in 12 major hospital systems; expected 3‑year scaling |
-| **Zero‑Trust Network Access (ZTNA) Platforms** | Identity‑centric perimeter replacement, micro‑segmentation | Enterprise spend up 28 % YoY; 45 % of Fortune 500 have deployed |
-| **Hybrid Quantum Cloud** | Optimization of logistics, material discovery, risk modeling | Limited to pilot projects; venture funding up 62 % in 2024 |
+| Technology | Commercial Applications | Adoption Trend |
+|------------|------------------------|----------------|
+| **Generative AI & Foundation Models** | Co‑authoring, code generation, AI‑assisted design, knowledge bots | Enterprise adoption >70% of Fortune 500 by 2025 |
+| **Edge‑AI + 5G/6G** | Real‑time IoT analytics, autonomous drones, AR/VR services | Edge compute market CAGR ≈ 22% |
+| **Zero‑Trust Network Access (ZTNA)** | Identity‑first security, micro‑segmentation, secure access service edge (SASE) | Replacing legacy VPNs at >50% rate |
+| **Carbon Capture & Utilization (CCU) Platforms** | Industrial CO₂ recycling, green hydrogen, synthetic fuels | Investment pipeline >$80 B by 2026 |
+| **Quantum‑Ready Cloud Services** | Quantum simulation for drug discovery, optimization, cryptography | Early‑adopter uptake in finance & pharma, projected 10 k users by 2026 |
 
-> **Takeaway:** The most attractive commercial opportunities lie at the intersection of AI, data‑intensity, and regulatory pressure—especially where subscription models can monetize continuous improvement.
+> **Takeaway:** Companies that embed these technologies into core product stacks will capture disproportionate market share and command higher valuation multiples.
 
 ---
 
 ## 5. Customer Demand Dynamics & Consumer Shifts  
 
-- **Outcome‑based purchasing:** Enterprises now prefer **pay‑for‑performance** contracts (e.g., AI models that guarantee a 15 % efficiency lift).  
-- **Sustainability as a procurement criterion:** 63 % of global B2B buyers rate ESG compliance as a “must‑have” before vendor selection.  
-- **Hyper‑personalization in health services:** Consumers expect **real‑time, AI‑curated care plans**—driving demand for APIs that integrate wearables with EMR data.  
-- **Security fatigue:** SMBs are consolidating multiple point solutions into **single‑pane‑of‑glass** cyber‑resilience platforms.  
-- **Talent scarcity:** Companies are willing to pay a **premium for up‑skilled staff**, leading to higher spend on training platforms and talent‑as‑a‑service (TaaS) solutions.  
+- **AI‑augmented productivity** – B2B buyers are willing to pay up to **3×** higher subscription fees for solutions that demonstrably cut labor hours by ≥30%.  
+- **Sustainability as a purchasing criterion** – 62% of enterprise procurement leaders rank carbon‑footprint reduction above cost when selecting vendors.  
+- **Health‑data ownership** – Consumers demand transparent data‑use policies; platforms offering **personal data vaults** see 2‑3× higher retention.  
+- **Security fatigue** – Organizations allocate **15%** of IT budgets to resilience, preferring subscription‑based zero‑trust bundles over point products.  
+- **Experience‑first digital health** – Seamless omni‑channel journeys (app + wearables + tele‑consult) drive a **20%** lift in willingness to pay for premium plans.
 
-> **Takeaway:** Products that embed measurable ROI, ESG impact, and seamless integration into existing tech stacks will dominate purchasing decisions.
+> **Takeaway:** Product‑market fit now hinges on **measurable ROI**, **transparent ESG impact**, and **privacy‑first user experiences**.
 
 ---
 
 ## 6. High‑Potential Startup & Business Opportunities  
 
-| Idea | Why It’s Viable Now | Core Revenue Model |
-|------|----------------------|--------------------|
-| **AI‑Powered Process Mining SaaS** | Enterprises seek to visualize hidden workflow inefficiencies after hybrid‑work surge; generative AI can auto‑suggest redesigns. | Tiered subscription + success‑fee on cost‑savings realized |
-| **Carbon‑Offset Marketplace for SMEs** | ESG reporting mandates now apply to firms with <$500 m revenue; a frictionless API can auto‑track and retire offsets. | Transaction fee + white‑label licensing |
-| **Remote‑Diagnostics Platform for Chronic Diseases** | Aging populations and tele‑health reimbursement expansions create a large addressable market. | Per‑patient licensing + data‑analytics add‑on |
-| **Zero‑Trust Identity‑Verification as a Service** | Rising ransomware attacks push firms toward unified identity solutions; integration with existing IAM tools is a low‑friction entry. | Seat‑based pricing + premium compliance modules |
-| **Quantum‑Ready Optimization SaaS for Supply Chains** | Global logistics bottlenecks demand near‑real‑time optimization; quantum‑accelerated solvers can claim 2‑3× speed gains. | Consumption‑based pricing on compute minutes |
+| Idea | Why It’s Viable Now | Core Business Model |
+|------|---------------------|---------------------|
+| **AI‑Co‑Creation Platform for Enterprise Docs** | Generative AI reduces document creation cost; compliance‑ready templates are in demand. | SaaS subscription + usage‑based AI token fees |
+| **Carbon‑Smart Marketplace for SMEs** | Regulatory pressure pushes small manufacturers to source low‑carbon inputs. | Transaction fee on carbon‑verified trades + data‑analytics services |
+| **Remote Clinical Trial Orchestration (RCT‑Ops)** | Digital health adoption + AI‑driven patient matching accelerates trial timelines. | Platform‑as‑a‑Service (PaaS) with success‑based revenue sharing |
+| **Zero‑Trust Identity‑as‑Service for Remote Workforces** | Hybrid work fuels demand for seamless, secure access without VPN overhead. | Tiered subscription, per‑user licensing |
+| **Quantum‑Optimized Supply‑Chain Planner** | Quantum algorithms can solve NP‑hard logistics problems faster than classical heuristics. | Cloud‑based API pricing + enterprise licensing |
 
-> **Takeaway:** Successful ventures will combine a **clear regulatory or ESG hook** with a **subscription‑first architecture** that can scale quickly across borders.
+> **Takeaway:** The most fundable ventures combine a **clear AI or quantum edge**, address an **ESG or security pain point**, and adopt a **scalable SaaS or marketplace** model.
 
 ---
 
@@ -84,21 +83,21 @@
   "cagr": 18.5,
   "top_region": "North America",
   "market_size": 150000000000,
-  "keywords": ["AI Automation", "Sustainability", "Next-Gen SaaS", "Enterprise AI"],
+  "keywords": ["AI Automation", "Sustainability", "Next-Gen SaaS"],
   "historical_growth": [
-    {"year": "2021", "growth": 11.5, "milestone": "Digital Acceleration & Post-Pandemic Cloud Surge"},
-    {"year": "2022", "growth": 13.2, "milestone": "Macro Efficiency & Infrastructure Consolidation"},
-    {"year": "2023", "growth": 16.8, "milestone": "Generative AI & LLM Breakthrough Inflection"},
-    {"year": "2024", "growth": 20.4, "milestone": "Enterprise Agentic Deployment & Scaled Pilots"},
-    {"year": "2025", "growth": 24.1, "milestone": "Autonomous Workflow Integration & Deep Industry AI"},
-    {"year": "2026", "growth": 27.5, "milestone": "Pervasive Agentic Automation & Next-Gen Edge (Current)"}
+    {"year": "2021", "growth": 11.5, "milestone": "Digital acceleration & cloud surge"},
+    {"year": "2022", "growth": 13.2, "milestone": "Efficiency focus & consolidation"},
+    {"year": "2023", "growth": 16.8, "milestone": "Generative AI inflection point"},
+    {"year": "2024", "growth": 20.4, "milestone": "Enterprise agentic deployment"},
+    {"year": "2025", "growth": 24.1, "milestone": "Autonomous systems integration"},
+    {"year": "2026", "growth": 27.5, "milestone": "Pervasive AI & edge scale (Current)"}
   ],
   "sectors": [
-    {"name": "AI-Driven SaaS", "cagr": 28.5, "market_size_b": 110.0},
-    {"name": "CleanTech & Decarbonization", "cagr": 22.0, "market_size_b": 70.0},
-    {"name": "HealthTech & Therapeutics", "cagr": 19.5, "market_size_b": 65.0},
-    {"name": "Cyber-Resilience SaaS", "cagr": 17.0, "market_size_b": 45.0},
-    {"name": "Quantum-Ready Cloud", "cagr": 32.0, "market_size_b": 20.0}
+    {"name": "AI-Driven SaaS", "cagr": 28.5},
+    {"name": "CleanTech", "cagr": 22.0},
+    {"name": "HealthTech", "cagr": 19.5},
+    {"name": "Cyber-Resilience", "cagr": 17.0},
+    {"name": "Quantum Cloud", "cagr": 32.0}
   ]
 }
 ```

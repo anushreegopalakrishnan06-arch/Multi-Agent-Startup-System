@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { getWsUrl } from "../services/api";
 
 export default function LiveConsole() {
   const { currentUser } = useAuth();
@@ -12,8 +13,7 @@ export default function LiveConsole() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    const ws = new WebSocket(`ws://localhost:8000/api/ws/logs?token=${token}`);
+    const ws = new WebSocket(getWsUrl("/api/ws/logs"));
     ws.onmessage = (event) => setLogs((prev) => [...prev, event.data]);
     return () => ws.close();
   }, []);
