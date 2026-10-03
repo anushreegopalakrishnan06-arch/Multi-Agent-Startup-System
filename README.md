@@ -1,5 +1,7 @@
 # 🚀 Multi-Agent Startup Intelligence Platform (`Novaventure AI`)
 
+LIVE DEMO: https://multi-agent-startup-intelligent-sys.vercel.app
+
 An end-to-end **AI-Powered Multi-Agent Startup Intelligence & Validation System** built with **CrewAI**, **FastAPI**, **MongoDB Atlas**, and **React (Vite + Tailwind CSS)**.
 
 This platform orchestrates a sequential pipeline of **four specialized AI agents** powered by **Llama 3.3 70B (via Groq)** and **real-time Google Search (via SerperDev)** to research market trends, discover viable startup opportunities based on domain and budget, project financial metrics, and validate overall business viability—streaming live execution logs via WebSockets to an interactive analytics dashboard.
