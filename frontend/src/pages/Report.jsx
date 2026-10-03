@@ -728,12 +728,115 @@ export default function Report() {
     );
   };
 
+  const extractFinancialMetrics = (parsedObj, rawStr, budgetVal) => {
+    const parseNum = (v) => {
+      if (v === null || v === undefined) return null;
+      if (typeof v === "number" && !isNaN(v) && v > 0) return v;
+      const str = String(v).replace(/[\$,\s\*\~]/g, "").trim();
+      let mult = 1;
+      if (/k$/i.test(str)) mult = 1000;
+      if (/m$/i.test(str)) mult = 1000000;
+      const cleaned = str.replace(/[kmKM]/g, "");
+      const n = parseFloat(cleaned);
+      return !isNaN(n) ? Math.round(n * mult) : null;
+    };
+
+    let investment = parseNum(parsedObj?.initial_investment);
+    let revenue = parseNum(parsedObj?.first_year_revenue);
+    let burnRate = parseNum(parsedObj?.burn_rate);
+    let breakEven = parseNum(parsedObj?.break_even_month);
+    let roi = parsedObj?.projected_roi != null ? Number(parsedObj.projected_roi) : null;
+
+    // Actual Investment: extract directly from the report text or user's exact input budget
+    if (!investment || investment < 1000) {
+      if (rawStr) {
+        const sec1 = rawStr.match(/Initial\s+Investment[^\n]*\n([\s\S]*?)(?:---|##\s*2)/i);
+        if (sec1) {
+          const mTot = sec1[1].match(/\|\s*(?:\*\*)?TOTAL(?:\*\*)?\s*\|[^\n]*?\$?\s*([0-9,]+(?:\s*[km])?)/i);
+          if (mTot) {
+            const val = parseNum(mTot[1]);
+            if (val && val >= 1000) investment = val;
+          }
+        }
+        if (!investment) {
+          const mInv = rawStr.match(/(?:initial\s+investment|required\s+capital|start-up\s+budget)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)/i);
+          if (mInv) investment = parseNum(mInv[1]);
+        }
+      }
+      if (!investment && budgetVal && Number(budgetVal) > 0) {
+        investment = Number(budgetVal);
+      }
+    }
+
+    // Actual Revenue: extract directly from the report text
+    if (!revenue || revenue <= 0) {
+      if (rawStr) {
+        const sec2 = rawStr.match(/Revenue\s+Projections[^\n]*\n([\s\S]*?)(?:\n\s*---|##|\Z)/i);
+        if (sec2) {
+          const mTot2 = sec2[1].match(/\|\s*(?:\*\*)?TOTAL(?:\*\*)?\s*\|[^\n]*?\$?\s*([0-9,]+(?:\s*[km])?)/i);
+          if (mTot2) revenue = parseNum(mTot2[1]);
+        }
+        if (!revenue) {
+          const mRev = rawStr.match(/\|\s*(?:\*\*)?(?:Projected\s+(?:Year[‑\-]1\s+)?Revenue|Revenue)[^\n|]*(?:\*\*)?\s*\|\s*\$?\s*([0-9\s,]+(?:\s*[km])?)/i);
+          if (mRev) revenue = parseNum(mRev[1]);
+        }
+        if (!revenue) {
+          const mGross = rawStr.match(/(?:first\s+year\s+revenue|annual\s+revenue|gross\s+revenue|year\s*1\s+revenue)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)/i);
+          if (mGross) revenue = parseNum(mGross[1]);
+        }
+      }
+    }
+
+    // Actual Burn Rate: extract directly from the report text
+    if (!burnRate || burnRate < 1000) {
+      if (rawStr) {
+        const sec4 = rawStr.match(/Burn\s+Rate[^\n]*\n([\s\S]*?)$/i);
+        if (sec4) {
+          const mTot = sec4[1].match(/\|\s*(?:\*\*)?\$?([0-9,]+(?:\s*[km])?)(?:\*\*)?\s*\|\s*$/m);
+          if (mTot) burnRate = parseNum(mTot[1]);
+        }
+        if (!burnRate || burnRate < 1000) {
+          const mBurn2 = rawStr.match(/(?:monthly\s+burn(?:\s+rate)?|monthly\s+operating\s+costs?)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)/i);
+          if (mBurn2) burnRate = parseNum(mBurn2[1]);
+        }
+      }
+    }
+
+    // Actual Break-even month: extract directly from the report text
+    if (!breakEven) {
+      if (rawStr) {
+        const mBe = rawStr.match(/Break[‑\-]Even[^\n|]*Month\s*([0-9]+)/i);
+        if (mBe) breakEven = parseInt(mBe[1], 10);
+      }
+    }
+
+    // Actual ROI: extract directly from the report text
+    if (roi == null || roi <= 1) {
+      if (rawStr) {
+        const mRoi = rawStr.match(/ROI\s*(?:Outlook|\(3‑yr\)|\(3-yr\)|target)?\s*(?:≈|~|=|\:|\b)[^0-9%]*?([0-9]+(?:\.[0-9]+)?)\s*%/i);
+        if (mRoi) roi = parseFloat(mRoi[1]);
+      }
+    }
+
+    return {
+      investment: investment || null,
+      revenue: revenue || null,
+      burnRate: burnRate || null,
+      breakEven: breakEven || null,
+      roi: roi != null ? roi : null,
+    };
+  };
+
   const renderFinancialTab = () => {
+    const rawFinancial = report.clean_raw?.financial || report.raw?.financial || rawContent || "";
+    const fin = extractFinancialMetrics(parsed, rawFinancial, report.budget);
+
+    const hasFinancialData = fin.investment != null || fin.revenue != null;
     const barData = [
       {
         name: "Financial Comparison",
-        Investment: parsed.initial_investment || 0,
-        Revenue: parsed.first_year_revenue || 0,
+        ...(fin.investment != null ? { Investment: fin.investment } : {}),
+        ...(fin.revenue != null ? { Revenue: fin.revenue } : {}),
       },
     ];
 
@@ -750,44 +853,78 @@ export default function Report() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <KPICard
             title="Projected ROI"
-            value={parsed.projected_roi != null ? `+${parsed.projected_roi}%` : "—"}
+            value={fin.roi != null ? `+${fin.roi}%` : "—"}
             icon={TrendingUp}
             color="text-green-500"
             bg="bg-green-500/10"
           />
           <KPICard
             title="Break-even Period"
-            value={parsed.break_even_month != null ? `${parsed.break_even_month} Months` : "—"}
+            value={fin.breakEven != null ? `${fin.breakEven} Months` : "—"}
             icon={Activity}
             color="text-blue-500"
             bg="bg-blue-500/10"
           />
           <KPICard
             title="Monthly Burn Rate"
-            value={parsed.burn_rate != null ? `$${Number(parsed.burn_rate).toLocaleString()}` : "—"}
+            value={fin.burnRate != null ? `$${Number(fin.burnRate).toLocaleString()}` : "—"}
             icon={DollarSign}
             color="text-red-500"
             bg="bg-red-500/10"
           />
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl h-[400px]">
-          <h3 className="font-bold text-lg mb-6 text-on-surface">Investment vs Revenue (1st Year)</h3>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
-              <XAxis dataKey="name" stroke="#9CA3AF" />
-              <YAxis stroke="#9CA3AF" tickFormatter={formatYAxis} />
-              <Tooltip
-                cursor={{ fill: "#374151", opacity: 0.4 }}
-                contentStyle={{ backgroundColor: "#1F2937", borderColor: "#374151", color: "#F3F4F6" }}
-                formatter={(value) => ["$" + Number(value).toLocaleString(), undefined]}
-              />
-              <Legend wrapperStyle={{ paddingTop: "20px" }} />
-              <Bar dataKey="Investment" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={60} />
-              <Bar dataKey="Revenue" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={60} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-outline-variant shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/40 pb-4">
+            <div>
+              <h3 className="font-bold text-lg text-on-surface">Investment vs Revenue (1st Year)</h3>
+              <p className="text-xs text-on-surface-variant mt-1">
+                Actual figures extracted directly from the AI-generated financial advisory report.
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-semibold">
+              {fin.investment != null && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                  Investment: ${Number(fin.investment).toLocaleString()}
+                </span>
+              )}
+              {fin.revenue != null && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Revenue: ${Number(fin.revenue).toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {hasFinancialData ? (
+            <div className="w-full h-[320px] min-h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} vertical={false} />
+                  <XAxis dataKey="name" stroke="#9CA3AF" tick={{ fill: "#9CA3AF", fontSize: 13 }} />
+                  <YAxis stroke="#9CA3AF" tickFormatter={formatYAxis} tick={{ fill: "#9CA3AF", fontSize: 12 }} />
+                  <Tooltip
+                    cursor={{ fill: "#374151", opacity: 0.3 }}
+                    contentStyle={{ backgroundColor: "#1F2937", borderColor: "#374151", borderRadius: "12px", color: "#F3F4F6" }}
+                    formatter={(value, name) => ["$" + Number(value).toLocaleString(), name]}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: "15px" }} />
+                  {fin.investment != null && (
+                    <Bar dataKey="Investment" fill="#ef4444" radius={[6, 6, 0, 0]} maxBarSize={70} />
+                  )}
+                  {fin.revenue != null && (
+                    <Bar dataKey="Revenue" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={70} />
+                  )}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="py-12 text-center text-sm text-on-surface-variant italic">
+              No financial investment or revenue data was generated for this report.
+            </div>
+          )}
         </div>
       </div>
     );

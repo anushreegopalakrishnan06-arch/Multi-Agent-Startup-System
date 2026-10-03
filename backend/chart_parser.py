@@ -369,61 +369,105 @@ def parse_financial_data(raw: str) -> dict:
     """Extract initial_investment, projected_roi, break_even_month, first_year_revenue, burn_rate dynamically."""
     data = _extract_json(raw)
 
+    def _to_num(val_str):
+        if not val_str:
+            return None
+        s = re.sub(r'[\$,\s\*\~]', '', str(val_str)).strip()
+        mult = 1
+        if 'k' in s.lower():
+            mult = 1000
+            s = re.sub(r'[kK]', '', s)
+        elif 'm' in s.lower():
+            mult = 1000000
+            s = re.sub(r'[mM]', '', s)
+        m = re.search(r'([0-9]+(?:\.[0-9]+)?)', s)
+        return int(float(m.group(1)) * mult) if m else None
+
     # 1. Initial Investment
-    if not data.get("initial_investment"):
-        m_inv_tbl = re.search(r'\|\s*\*?\*?Initial\s+Investment[^\n|]*\*?\*?\s*\|\s*~?\$?\s*([0-9\s,]+)', raw, re.IGNORECASE)
-        if m_inv_tbl:
-            cleaned = re.sub(r'[\s,]', '', m_inv_tbl.group(1))
-            if cleaned.isdigit():
-                data["initial_investment"] = int(cleaned)
-        else:
-            m = re.search(r'(?:initial\s+investment|required\s+capital|start-up\s+budget|total\s+budget)[^0-9$]*\$?([0-9,]+)', raw, re.IGNORECASE)
-            if m:
-                data["initial_investment"] = int(m.group(1).replace(",", ""))
+    if not data.get("initial_investment") or data.get("initial_investment") < 1000:
+        sec1 = re.search(r'Initial\s+Investment[^\n]*\n([\s\S]*?)(?:---|##\s*2)', raw, re.IGNORECASE)
+        if sec1:
+            m_tot = re.findall(r'\|\s*(?:\*\*)?TOTAL(?:\*\*)?\s*\|[^\n]*?\$?\s*([0-9,]+(?:\s*[km])?)', sec1.group(1), re.IGNORECASE)
+            if m_tot:
+                parsed_inv = _to_num(m_tot[-1])
+                if parsed_inv:
+                    data["initial_investment"] = parsed_inv
+        if not data.get("initial_investment"):
+            m_inv_tbl = re.search(r'\|\s*(?:\*\*)?Initial\s+Investment[^\n|]*(?:\*\*)?\s*\|\s*~?\$?\s*([0-9\s,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+            if m_inv_tbl:
+                parsed_inv = _to_num(m_inv_tbl.group(1))
+                if parsed_inv:
+                    data["initial_investment"] = parsed_inv
+            else:
+                m = re.search(r'(?:initial\s+investment|required\s+capital|start-up\s+budget)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+                if m:
+                    parsed_inv = _to_num(m.group(1))
+                    if parsed_inv:
+                        data["initial_investment"] = parsed_inv
 
     # 2. Projected ROI
-    if not data.get("projected_roi"):
-        m_roi_tbl = re.search(r'\|\s*\*?\*?ROI[^\n|]*\*?\*?\s*\|\s*~?\+?\s*([0-9]+(?:\.[0-9]+)?)\s*%', raw, re.IGNORECASE)
-        if m_roi_tbl:
-            data["projected_roi"] = float(m_roi_tbl.group(1))
-        else:
-            m = re.search(r'(?:projected\s+roi|roi)[^0-9]*([0-9]+(?:\.[0-9]+)?)\s*%', raw, re.IGNORECASE)
-            if m:
-                data["projected_roi"] = float(m.group(1))
+    if not data.get("projected_roi") or data.get("projected_roi") <= 1.0:
+        m_pos_roi = re.search(r'ROI\s*(?:≈|~|=|\:|\b|Outlook[^0-9%]*?)\s*([0-9]+(?:\.[0-9]+)?)\s*%', raw, re.IGNORECASE)
+        if m_pos_roi:
+            data["projected_roi"] = float(m_pos_roi.group(1))
+        elif not data.get("projected_roi"):
+            m_roi_tbl = re.search(r'\|\s*(?:\*\*)?ROI[^\n|]*(?:\*\*)?\s*\|\s*~?\+?\s*([0-9]+(?:\.[0-9]+)?)\s*%', raw, re.IGNORECASE)
+            if m_roi_tbl:
+                data["projected_roi"] = float(m_roi_tbl.group(1))
 
     # 3. Break Even Month
     if not data.get("break_even_month"):
-        m_be_tbl = re.search(r'\|\s*\*?\*?Break-Even[^\n|]*\*?\*?\s*\|\s*Month\s*([0-9]+)', raw, re.IGNORECASE)
+        m_be_tbl = re.search(r'Break[‑\-]Even[^\n|]*Month\s*([0-9]+)', raw, re.IGNORECASE)
         if m_be_tbl:
             data["break_even_month"] = int(m_be_tbl.group(1))
         else:
-            m = re.search(r'(?:break-even|pay-back)[^0-9]*([0-9]+)\s*(?:months?|m)?', raw, re.IGNORECASE)
+            m = re.search(r'(?:break[‑\-]even|pay[‑\-]back)[^0-9]*([0-9]+)\s*(?:months?|m)?', raw, re.IGNORECASE)
             if m:
                 data["break_even_month"] = int(m.group(1))
 
     # 4. First Year Revenue
     if not data.get("first_year_revenue"):
-        m_rev_tbl = re.search(r'\|\s*\*?\*?Projected\s+(?:Year-1\s+)?Revenue[^\n|]*\*?\*?\s*\|\s*\$?\s*([0-9\s,]+)', raw, re.IGNORECASE)
-        if m_rev_tbl:
-            cleaned = re.sub(r'[\s,]', '', m_rev_tbl.group(1))
-            if cleaned.isdigit():
-                data["first_year_revenue"] = int(cleaned)
-        else:
-            m = re.search(r'(?:first\s+year\s+revenue|annual\s+revenue|gross\s+revenue)[^0-9$]*\$?([0-9,]+)', raw, re.IGNORECASE)
-            if m:
-                data["first_year_revenue"] = int(m.group(1).replace(",", ""))
+        sec2 = re.search(r'Revenue\s+Projections[^\n]*\n([\s\S]*?)(?:\n\s*---|##|\Z)', raw, re.IGNORECASE)
+        if sec2:
+            m_tot = re.findall(r'\|\s*(?:\*\*)?TOTAL(?:\*\*)?\s*\|[^\n]*?\$?\s*([0-9,]+(?:\s*[km])?)', sec2.group(1), re.IGNORECASE)
+            if m_tot:
+                parsed_rev = _to_num(m_tot[-1])
+                if parsed_rev:
+                    data["first_year_revenue"] = parsed_rev
+        if not data.get("first_year_revenue"):
+            m_rev_tbl = re.search(r'\|\s*(?:\*\*)?(?:Projected\s+(?:Year[‑\-]1\s+)?Revenue|Revenue)[^\n|]*(?:\*\*)?\s*\|\s*\$?\s*([0-9\s,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+            if m_rev_tbl:
+                parsed_rev = _to_num(m_rev_tbl.group(1))
+                if parsed_rev:
+                    data["first_year_revenue"] = parsed_rev
+            else:
+                m = re.search(r'(?:first\s+year\s+revenue|annual\s+revenue|gross\s+revenue|year\s*1\s+revenue)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+                if m:
+                    parsed_rev = _to_num(m.group(1))
+                    if parsed_rev:
+                        data["first_year_revenue"] = parsed_rev
 
     # 5. Burn Rate
-    if not data.get("burn_rate"):
-        m_burn_tbl = re.search(r'\|\s*\*?\*?(?:Average\s+Monthly\s+Burn|Monthly\s+Burn)[^\n|]*\*?\*?\s*\|\s*\$?\s*([0-9\s,]+)', raw, re.IGNORECASE)
-        if m_burn_tbl:
-            cleaned = re.sub(r'[\s,]', '', m_burn_tbl.group(1))
-            if cleaned.isdigit():
-                data["burn_rate"] = int(cleaned)
-        else:
-            m = re.search(r'(?:burn\s+rate|monthly\s+operating\s+costs?|monthly\s+burn)[^0-9$]*\$?([0-9,]+)', raw, re.IGNORECASE)
-            if m:
-                data["burn_rate"] = int(m.group(1).replace(",", ""))
+    if not data.get("burn_rate") or data.get("burn_rate") < 1000:
+        sec4 = re.search(r'Burn\s+Rate[^\n]*\n([\s\S]*?)$', raw, re.IGNORECASE)
+        if sec4:
+            m_tot = re.findall(r'\|\s*(?:\*\*)?\$?([0-9,]+(?:\s*[km])?)(?:\*\*)?\s*\|\s*$', sec4.group(1), re.MULTILINE)
+            if m_tot:
+                parsed_burn = _to_num(m_tot[0])
+                if parsed_burn:
+                    data["burn_rate"] = parsed_burn
+        if not data.get("burn_rate") or data.get("burn_rate") < 1000:
+            m_burn_tbl = re.search(r'\|\s*(?:\*\*)?(?:Average\s+Monthly\s+Burn|Monthly\s+Burn)[^\n|]*(?:\*\*)?\s*\|\s*\$?\s*([0-9\s,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+            if m_burn_tbl:
+                parsed_burn = _to_num(m_burn_tbl.group(1))
+                if parsed_burn:
+                    data["burn_rate"] = parsed_burn
+            else:
+                m = re.search(r'(?:monthly\s+burn(?:\s+rate)?|monthly\s+operating\s+costs?)[^0-9$]*\$?\s*([0-9,]+(?:\s*[km])?)', raw, re.IGNORECASE)
+                if m:
+                    parsed_burn = _to_num(m.group(1))
+                    if parsed_burn:
+                        data["burn_rate"] = parsed_burn
 
     return data
 
